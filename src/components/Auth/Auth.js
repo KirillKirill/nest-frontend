@@ -1,7 +1,7 @@
 import React from "react"
 import * as S from "./AuthStyles"
 
-const Auth = () => {
+const Auth = ({ setUserToken, history }) => {
   return (
     <S.Container>
       <S.RoutesContainer>
@@ -12,7 +12,15 @@ const Auth = () => {
         <S.Input value="" placeholder="Username" />
         <S.Input value="" placeholder="E-mail" />
         <S.Input value="" placeholder="Password" />
-        <S.Button>Sign Up</S.Button>
+        <S.Button
+          onClick={() => {
+            localStorage.setItem("userToken", "some token")
+            setUserToken("some token")
+            history.push("/")
+          }}
+        >
+          Sign Up
+        </S.Button>
       </S.Form>
     </S.Container>
   )
