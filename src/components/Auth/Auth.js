@@ -12,15 +12,7 @@ const Auth = ({ setUserToken, history }) => {
         <S.Input value="" placeholder="Username" />
         <S.Input value="" placeholder="E-mail" />
         <S.Input value="" placeholder="Password" />
-        <S.Button
-          onClick={() => {
-            localStorage.setItem("userToken", "some token")
-            setUserToken("some token")
-            history.push("/")
-          }}
-        >
-          Sign Up
-        </S.Button>
+        <S.Button>Sign Up</S.Button>
       </S.Form>
     </S.Container>
   )

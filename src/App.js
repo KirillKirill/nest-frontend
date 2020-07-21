@@ -1,24 +1,17 @@
-import React, { useState } from "react"
-import Auth from "./components/Auth/Auth"
+import React from "react"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute"
 import Users from "./components/Users/Users"
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import { createBrowserHistory } from "history"
+import Auth from "./components/Auth/Auth"
+import "./App.css"
 
 function App() {
-  const [userToken, setUserToken] = useState(localStorage.getItem("userToken"))
   return (
     <div className="App">
-      <Router history={createBrowserHistory()}>
+      <Router>
         <Switch>
-          {!userToken && (
-            <Route
-              exact
-              path="/login"
-              render={props => <Auth {...props} setUserToken={setUserToken} />}
-            />
-          )}
-          <PrivateRoute isLoggedIn={!!userToken} path="/" component={Users} />
+          <PrivateRoute exact path="/" component={Users} />
+          <Route path="/login" component={Auth} />
         </Switch>
       </Router>
     </div>
