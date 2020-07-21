@@ -1,5 +1,5 @@
 import React from "react"
-import { Router, Route, Switch, Redirect } from "react-router-dom"
+import { Router, Route, Switch } from "react-router-dom"
 import { createBrowserHistory } from "history"
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute"
 import Users from "./components/Users/Users"
@@ -13,8 +13,6 @@ function App() {
         <Switch>
           <PrivateRoute exact path="/" component={Users} />
           <Route path="/login" component={Auth} />
-          <Route path="/register" component={Auth} />
-          <Redirect from="*" to="/" />
         </Switch>
       </Router>
     </div>
