@@ -1,17 +1,19 @@
 import React from "react"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute"
-import Users from "./components/Users/Users"
-import Auth from "./components/Auth/Auth"
 import "./App.css"
+import Register from "./components/Register/Register"
+import Login from "./components/Login/Login"
+import Profile from "./components/Profile/Profile"
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Switch>
-          <PrivateRoute exact path="/" component={Users} />
-          <Route path="/login" component={Auth} />
+          <PrivateRoute exact path="/" component={Profile} />
+          <Route path="/register" component={Register} />
+          <Route path="/login" component={Login} />
         </Switch>
       </Router>
     </div>

@@ -7,20 +7,11 @@ export const Container = styled.div`
   align-items: center;
 `
 
-export const RoutesContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  height: 80px;
-  background-color: lightgray;
-`
-
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: 300px;
-  height: 300px;
+  height: 350px;
   margin-top: 200px;
   border-radius: 15px;
   border: 2px solid lightgray;
@@ -40,7 +31,7 @@ export const Input = styled.input`
 export const Button = styled.button`
   width: 100px;
   height: 40px;
-  margin-top: 50px;
+  margin-top: 30px;
   border: none;
   border-radius: 5px;
   outline: none;
@@ -51,7 +42,8 @@ export const Button = styled.button`
   font-weight: 500;
 `
 
-export const RouteButton = styled(Button)`
-  margin-right: 20px;
-  margin-top: 0;
+export const Text = styled.p`
+  margin: 20px 0 0 0;
+  font-size: 16px;
+  font-weight: 300;
 `
