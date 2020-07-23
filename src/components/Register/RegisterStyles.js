@@ -40,10 +40,21 @@ export const Button = styled.button`
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `
 
 export const Text = styled.p`
   margin: 20px 0 0 0;
   font-size: 16px;
   font-weight: 300;
+`
+
+export const ErrorText = styled.p`
+  height: 20px;
+  margin: 10px 0;
+  color: red;
+  font-size: 10px;
 `

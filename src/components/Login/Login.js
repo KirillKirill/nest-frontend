@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
-import * as S from "./LoginStyles"
+import * as S from "../Register/RegisterStyles"
 import NavBar from "../NavBar/NavBar"
 import { authServices } from "../../services/authService"
 
@@ -10,24 +10,30 @@ const Login = props => {
     password: "",
   })
 
+  const [error, setError] = useState("")
+
   const changeInputValue = e => {
     const { name, value } = e.target
+    setError("")
     setInputValue({
       ...inputValues,
       [name]: value,
     })
   }
 
-  const handleLoginClick = e => {
+  const handleLoginClick = async e => {
     e.preventDefault()
     const { email, password } = inputValues
-    authServices
-      .login(email, password)
-      .then(res => res.json())
-      .then(res => {
-        localStorage.setItem("token", res.token)
-      })
-      .then(() => props.history.push("/"))
+
+    const response = await authServices.login(email, password)
+    if (!response.ok) {
+      const error = await response.json()
+      setError(error.message)
+    } else {
+      const data = await response.json()
+      localStorage.setItem("token", data.token)
+      props.history.push("/")
+    }
   }
 
   const { email, password } = inputValues
@@ -49,7 +55,13 @@ const Login = props => {
           placeholder="Password"
           type="password"
         />
-        <S.Button onClick={handleLoginClick}>Log In</S.Button>
+        <S.ErrorText>{error}</S.ErrorText>
+        <S.Button
+          onClick={handleLoginClick}
+          disabled={error || !email || !password}
+        >
+          Log In
+        </S.Button>
         <S.Text>
           Haven't account? Please, <Link to="/register">Sign up</Link>
         </S.Text>

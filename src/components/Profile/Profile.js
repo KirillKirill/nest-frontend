@@ -9,7 +9,7 @@ const Profile = ({ history }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userId = jwtDecode(localStorage.getItem("token")).userId
+      const { userId } = jwtDecode(localStorage.getItem("token"))
       const resp = await userServices.getUserById(userId)
       const result = await resp.json()
 

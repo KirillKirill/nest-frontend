@@ -4,12 +4,14 @@ import { Link } from "react-router-dom"
 import NavBar from "../NavBar/NavBar"
 import { authServices } from "../../services/authService"
 
-const Register = () => {
+const Register = ({ history }) => {
   const [inputValues, setInputValue] = useState({
     username: "",
     email: "",
     password: "",
   })
+
+  const [error, setError] = useState("")
 
   const changeInputValue = e => {
     const { name, value } = e.target
@@ -17,11 +19,18 @@ const Register = () => {
       ...inputValues,
       [name]: value,
     })
+    setError("")
   }
 
-  const handleSignUpClick = e => {
+  const handleSignUpClick = async e => {
     e.preventDefault()
-    authServices.register(inputValues)
+    const response = await authServices.register(inputValues)
+    if (!response.ok) {
+      const error = await response.json()
+      setError(error.message)
+    } else {
+      history.push("/login")
+    }
   }
 
   const { username, email, password } = inputValues
@@ -48,7 +57,15 @@ const Register = () => {
           placeholder="Password"
           type="password"
         />
-        <S.Button onClick={handleSignUpClick}>Sign Up</S.Button>
+        <S.ErrorText>{error}</S.ErrorText>
+        <S.Button
+          onClick={handleSignUpClick}
+          disabled={
+            error || !Object.values(inputValues).every(val => val.length > 0)
+          }
+        >
+          Sign Up
+        </S.Button>
         <S.Text>
           Have account? Just <Link to="/login">Log In</Link>
         </S.Text>
