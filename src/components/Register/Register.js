@@ -27,10 +27,21 @@ const Register = ({ history }) => {
     const response = await authServices.register(inputValues)
     if (!response.ok) {
       const error = await response.json()
-      setError(error.message)
+      setError(error)
     } else {
       history.push("/login")
     }
+  }
+
+  const getErrorForField = fieldName => {
+    if (error) {
+      const errorForField =
+        error.validationErrors.find(err => err.property === fieldName) || null
+
+      return errorForField ? Object.values(errorForField.constraints)[0] : null
+    }
+
+    return null
   }
 
   const { username, email, password } = inputValues
@@ -44,12 +55,14 @@ const Register = ({ history }) => {
           name="username"
           placeholder="Username"
         />
+        <S.ErrorText>{getErrorForField("username")}</S.ErrorText>
         <S.Input
           onChange={changeInputValue}
           value={email}
           name="email"
           placeholder="E-mail"
         />
+        <S.ErrorText>{getErrorForField("email")}</S.ErrorText>
         <S.Input
           onChange={changeInputValue}
           value={password}
@@ -57,7 +70,7 @@ const Register = ({ history }) => {
           placeholder="Password"
           type="password"
         />
-        <S.ErrorText>{error}</S.ErrorText>
+        <S.ErrorText>{getErrorForField("password")}</S.ErrorText>
         <S.Button
           onClick={handleSignUpClick}
           disabled={

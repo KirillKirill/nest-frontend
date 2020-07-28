@@ -3,6 +3,7 @@ const headers = { "Content-Type": "application/json" }
 
 export const userServices = {
   getUserById,
+  getUsers,
 }
 
 function getUserById(id) {
@@ -12,4 +13,13 @@ function getUserById(id) {
   }
 
   return fetch(`${API_URL}/getUser/${id}`, options)
+}
+
+function getUsers() {
+  const options = {
+    method: "GET",
+    headers,
+  }
+
+  return fetch(`${API_URL}/getUsers`, options)
 }

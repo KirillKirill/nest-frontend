@@ -17,12 +17,16 @@ export const Form = styled.form`
   border: 2px solid lightgray;
   align-items: center;
   padding: 20px;
+
+  & > input:first-child {
+    margin-top: 15px;
+  }
 `
 
 export const Input = styled.input`
   width: 200px;
   height: 40px;
-  margin-bottom: 20px;
+  margin-top: 15px;
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid lightgray;
@@ -54,7 +58,7 @@ export const Text = styled.p`
 
 export const ErrorText = styled.p`
   height: 20px;
-  margin: 10px 0;
+  margin: 5px 0 0 0;
   color: red;
   font-size: 10px;
 `

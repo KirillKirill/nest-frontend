@@ -7,6 +7,8 @@ import * as S from "./ProfileStyles"
 const Profile = ({ history }) => {
   const [user, setUser] = useState(null)
 
+  const [allUsers, setAllUsers] = useState(null)
+
   useEffect(() => {
     const fetchUser = async () => {
       const { userId } = jwtDecode(localStorage.getItem("token"))
@@ -17,6 +19,16 @@ const Profile = ({ history }) => {
     }
 
     fetchUser()
+  }, [])
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      const response = await userServices.getUsers()
+      const data = await response.json()
+      setAllUsers(data)
+    }
+
+    fetchAllUsers()
   }, [])
 
   const onLogoutClick = () => {
@@ -37,6 +49,26 @@ const Profile = ({ history }) => {
           Log Out
         </S.LogoutButton>
       </S.Header>
+      <S.ProfileInfo>
+        <S.SectionTitle>Your Info</S.SectionTitle>
+        <S.UserText>{user?.username}</S.UserText>
+        <S.UserText>{user?.email}</S.UserText>
+        <S.UserText>{user?.role}</S.UserText>
+      </S.ProfileInfo>
+      <S.UsersInfo>
+        <S.SectionTitle>Other Users</S.SectionTitle>
+        <S.OtherUsersContainer>
+          {allUsers
+            ?.filter(el => el.id !== user?.id)
+            .map(el => (
+              <S.OtherUserInfo key={el.id}>
+                <S.UserText>{el?.username}</S.UserText>
+                <S.UserText>{el?.email}</S.UserText>
+                <S.UserText>{el?.role}</S.UserText>
+              </S.OtherUserInfo>
+            ))}
+        </S.OtherUsersContainer>
+      </S.UsersInfo>
     </S.Container>
   )
 }
