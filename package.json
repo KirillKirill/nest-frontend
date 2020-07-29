@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^7.2.1",
     "history": "^5.0.0",
     "jwt-decode": "^2.2.0",
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.2.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
@@ -39,7 +41,6 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
