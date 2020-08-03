@@ -5,7 +5,7 @@ const PrivateProfileRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      localStorage.getItem("token") ? (
+      JSON.parse(localStorage.getItem("auth")).token ? (
         <Component {...props} />
       ) : (
         <Redirect to={{ pathname: "/login" }} />
