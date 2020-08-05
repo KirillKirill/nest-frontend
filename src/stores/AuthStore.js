@@ -5,7 +5,6 @@ import authService from "../services/authService"
 class AuthStore {
   isLoading = false
   isFailure = false
-  user = null
   token = null
   error = null
 
@@ -19,8 +18,6 @@ class AuthStore {
       runInAction(() => {
         this.isLoading = false
         this.isFailure = true
-        this.user = null
-        this.token = null
         this.error = err.validationErrors
       })
     }
@@ -35,18 +32,16 @@ class AuthStore {
       runInAction(() => {
         this.isFailure = false
         this.isLoading = false
-        this.user = data
         this.error = null
-        this.setAuthToken(data.token)
+        this.setToken(data.token)
       })
     } else {
       const err = await response.json()
       runInAction(() => {
         this.isFailure = true
         this.isLoading = false
-        this.user = null
-        this.setAuthToken(null)
         this.error = err.message
+        this.setToken(null)
       })
     }
   }
@@ -56,13 +51,12 @@ class AuthStore {
     runInAction(() => {
       this.isFailure = false
       this.isLoading = false
-      this.setAuthToken(null)
-      this.user = null
       this.error = null
+      this.setToken(null)
     })
   }
 
-  setAuthToken(token) {
+  setToken(token) {
     this.token = token
   }
 }
@@ -70,13 +64,12 @@ class AuthStore {
 decorate(AuthStore, {
   isLoading: observable,
   isFailure: observable,
-  user: observable,
   token: [persist, observable],
   error: observable,
   register: action,
   login: action,
   logout: action,
-  setAuthToken: action,
+  setToken: action,
 })
 
 const hydrate = create({})

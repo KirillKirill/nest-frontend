@@ -88,6 +88,6 @@ const Register = ({ history, authStore }) => {
   )
 }
 
-export default inject(store => ({ authStore: store.store.AuthStore }))(
+export default inject(store => ({ authStore: store.store.authStore }))(
   observer(Register)
 )

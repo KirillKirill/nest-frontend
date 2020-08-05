@@ -2,21 +2,24 @@ import React from "react"
 import { inject, observer } from "mobx-react"
 import * as S from "./NavBarStyles"
 
-const NavBar = ({ history, user, authStore }) => {
+const NavBar = ({ history, authStore, profileStore, ...rest }) => {
   const onLogoutClick = async () => {
     await authStore.logout()
+    profileStore.setProfile(null)
     history.push("/")
   }
 
-  const token =
-    localStorage.getItem("auth") &&
-    JSON.parse(localStorage.getItem("auth")).token
+  const profile =
+    profileStore.profile || JSON.parse(localStorage.getItem("profile"))?.profile
+
+  const token = JSON.parse(localStorage.getItem("auth")).token
 
   return (
-    <S.Container isAuth={!!user}>
+    <S.Container isAuth={!!token}>
       {token ? (
         <>
-          <S.HeaderText>{`Hey, ${user?.username}!`}</S.HeaderText>
+          <S.HeaderText>{`Hey, ${profile?.username}!`}</S.HeaderText>
+          <S.EditButton to="/edit">Edit Profile</S.EditButton>
           <S.LinkButton to="/" onClick={onLogoutClick}>
             Log Out
           </S.LinkButton>
@@ -31,6 +34,7 @@ const NavBar = ({ history, user, authStore }) => {
   )
 }
 
-export default inject(store => ({ authStore: store.store.authStore }))(
-  observer(NavBar)
-)
+export default inject(store => ({
+  authStore: store.store.authStore,
+  profileStore: store.store.profileStore,
+}))(observer(NavBar))

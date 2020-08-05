@@ -28,7 +28,6 @@ const Login = ({ history, authStore }) => {
 
     await authStore.login(email, password)
     if (authStore.isFailure) {
-      console.log("here")
       setError(authStore.error)
     } else {
       history.push("/")
