@@ -1,6 +1,7 @@
 import { observable, action, runInAction, decorate } from "mobx"
 import { persist, create } from "mobx-persist"
 import authService from "../services/authService"
+import profileStore from "./ProfileStore"
 
 class AuthStore {
   isLoading = false
@@ -34,6 +35,7 @@ class AuthStore {
         this.isLoading = false
         this.error = null
         this.setToken(data.token)
+        profileStore.getProfile(this.token)
       })
     } else {
       const err = await response.json()

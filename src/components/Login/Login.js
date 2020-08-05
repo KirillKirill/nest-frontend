@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { inject, observer } from "mobx-react"
 import { Link } from "react-router-dom"
 import * as S from "../Register/RegisterStyles"
-import NavBar from "../NavBar/NavBar"
 
 const Login = ({ history, authStore }) => {
   const [inputValues, setInputValue] = useState({
@@ -38,7 +37,6 @@ const Login = ({ history, authStore }) => {
 
   return (
     <S.Container>
-      <NavBar />
       <S.Form>
         <S.Input
           onChange={changeInputValue}

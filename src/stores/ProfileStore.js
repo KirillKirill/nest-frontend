@@ -2,6 +2,7 @@ import { observable, action, runInAction, decorate } from "mobx"
 import { persist, create } from "mobx-persist"
 import userServices from "../services/userService"
 import jwtDecode from "jwt-decode"
+import authStore from "./AuthStore"
 
 class ProfileStore {
   isLoading = false
@@ -9,9 +10,8 @@ class ProfileStore {
   profile = null
   error = null
 
-  async getProfile() {
-    const token = JSON.parse(localStorage.getItem("auth")).token
-    const data = jwtDecode(token)
+  async getProfile(jwtToken) {
+    const data = jwtDecode(jwtToken)
     const { userId } = data
 
     this.isLoading = true
@@ -67,6 +67,7 @@ class ProfileStore {
         this.isFailure = false
         this.error = null
         this.setProfile(null)
+        authStore.setToken(null)
       })
     } else {
       const err = await resp.json()

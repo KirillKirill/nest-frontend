@@ -1,8 +1,9 @@
 import React from "react"
 import { inject, observer } from "mobx-react"
+import { withRouter } from "react-router-dom"
 import * as S from "./NavBarStyles"
 
-const NavBar = ({ history, authStore, profileStore, ...rest }) => {
+const NavBar = ({ history, authStore, profileStore }) => {
   const onLogoutClick = async () => {
     await authStore.logout()
     profileStore.setProfile(null)
@@ -12,7 +13,7 @@ const NavBar = ({ history, authStore, profileStore, ...rest }) => {
   const profile =
     profileStore.profile || JSON.parse(localStorage.getItem("profile"))?.profile
 
-  const token = JSON.parse(localStorage.getItem("auth")).token
+  const token = JSON.parse(localStorage.getItem("auth"))?.token
 
   return (
     <S.Container isAuth={!!token}>
@@ -34,7 +35,9 @@ const NavBar = ({ history, authStore, profileStore, ...rest }) => {
   )
 }
 
-export default inject(store => ({
-  authStore: store.store.authStore,
-  profileStore: store.store.profileStore,
-}))(observer(NavBar))
+export default withRouter(
+  inject(store => ({
+    authStore: store.store.authStore,
+    profileStore: store.store.profileStore,
+  }))(observer(NavBar))
+)

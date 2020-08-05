@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import { inject, observer } from "mobx-react"
 import * as S from "./EditProfileStyles"
-import NavBar from "../NavBar/NavBar"
 
-const EditProfile = ({ history, authStore, profileStore }) => {
+const EditProfile = ({ history, profileStore }) => {
   const profile = JSON.parse(localStorage.getItem("profile")).profile
 
   const [inputValues, setInputValue] = useState({
@@ -42,7 +41,6 @@ const EditProfile = ({ history, authStore, profileStore }) => {
 
   return (
     <S.Container>
-      <NavBar history={history} />
       <S.Title>Edit Your Profile</S.Title>
       <S.EditForm>
         <S.Label>

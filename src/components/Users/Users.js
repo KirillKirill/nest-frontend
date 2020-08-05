@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import NavBar from "../NavBar/NavBar"
 import * as S from "./UsersStyles"
 import userServices from "../../services/userService"
 
@@ -17,7 +16,6 @@ const Users = () => {
   }, [])
   return (
     <S.Container>
-      <NavBar />
       <S.UsersContainer>
         <S.SectionTitle>List of Users</S.SectionTitle>
         <S.UserList>

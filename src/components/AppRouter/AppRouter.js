@@ -9,10 +9,12 @@ import EditProfile from "../../components/EditProfile/EditProfile"
 import PrivateEditRoute from "../../components/PrivateRoutes/PrivateEditRoute"
 import PrivateAdminRoute from "../../components/PrivateRoutes/PrivateAdminRoute"
 import PrivateProfileRoute from "../../components/PrivateRoutes/PrivateProfileRoute"
+import NavBar from "../NavBar/NavBar"
 
 function AppRouter() {
   return (
     <Router>
+      <NavBar />
       <Switch>
         <PrivateProfileRoute exact path="/" component={Profile} />
         <Route path="/register" component={Register} />

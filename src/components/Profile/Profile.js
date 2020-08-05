@@ -1,25 +1,13 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { inject, observer } from "mobx-react"
 import * as S from "./ProfileStyles"
-import NavBar from "../NavBar/NavBar"
 
-const Profile = ({ history, profileStore }) => {
-  const [profile, setProfile] = useState(null)
-
-  useEffect(() => {
-    async function getProfile() {
-      await profileStore.getProfile()
-      if (!profileStore.isFailure) {
-        setProfile(JSON.parse(localStorage.getItem("profile")).profile)
-      }
-    }
-
-    getProfile()
-  }, [profile?.id])
+const Profile = ({ profileStore }) => {
+  const profile =
+    profileStore.profile && JSON.parse(localStorage.getItem("profile")).profile
 
   return (
     <S.Container>
-      <NavBar history={history} />
       <S.ProfileInfo>
         <S.SectionTitle>Your Info</S.SectionTitle>
         <S.UserText>{profile?.username}</S.UserText>
