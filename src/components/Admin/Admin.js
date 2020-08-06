@@ -1,63 +1,124 @@
 import React, { useEffect, useState } from "react"
-import jwtDecode from "jwt-decode"
+import { inject, observer } from "mobx-react"
 import * as S from "./AdminStyles"
-import NavBar from "../NavBar/NavBar"
-import userServices from "../../services/userService"
+import userStore from "../../stores/UserStore"
 
-const Admin = ({ history }) => {
-	const [admin, setAdmin] = useState(null)
+const Admin = () => {
+  const [allUsers, setAllUsers] = useState(null)
+  const [editedId, setEditedId] = useState(null)
+  const [updatedData, setUpdatedData] = useState({
+    id: "",
+    email: "",
+    username: "",
+    role: "",
+  })
 
-	const [allUsers, setAllUsers] = useState(null)
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      await userStore.getUsers()
+      setAllUsers(userStore.users)
+    }
 
-	useEffect(() => {
-		const fetchAdmin = async () => {
-			const { userId } = jwtDecode(localStorage.getItem("token"))
-			const resp = await userServices.getUserById(userId)
-			const result = await resp.json()
+    fetchAllUsers()
+  }, [])
 
-			setAdmin(result)
-		}
+  const onClickEditButton = id => {
+    const editedUser = allUsers.find(el => el.id === id)
+    if (editedId === id) {
+      setEditedId(null)
+      setUpdatedData(null)
+    } else {
+      setEditedId(id)
+      setUpdatedData(editedUser)
+    }
+  }
 
-		fetchAdmin()
-	}, [])
+  const onClickDeleteButton = async id => {
+    await userStore.deleteUser(id)
+    setAllUsers(userStore.users)
+  }
 
-	useEffect(() => {
-		const fetchAllUsers = async () => {
-			const response = await userServices.getUsers()
-			const data = await response.json()
-			setAllUsers(data.filter(el => el.role !== "admin"))
-		}
+  const onClickSaveButton = () => {
+    setEditedId(null)
+    setAllUsers(userStore.users)
+  }
 
-		fetchAllUsers()
-	}, [])
+  const renderUsernameCell = user => {
+    return editedId === user.id ? (
+      <input
+        value={updatedData.username}
+        name="username"
+        onChange={changeInputValue}
+      />
+    ) : (
+      <S.UserText>{user?.username}</S.UserText>
+    )
+  }
 
-	const onClickDeleteButton = async id => {
-		await userServices.deleteUser(id)
-		const response = await userServices.getUsers()
-		const newUserList = await response.json()
-		setAllUsers(newUserList.filter(el => el.role !== "admin"))
-	}
+  const renderEmailCell = user => {
+    return editedId === user.id ? (
+      <input
+        value={updatedData.email}
+        name="email"
+        onChange={changeInputValue}
+      />
+    ) : (
+      <S.UserText>{user?.email}</S.UserText>
+    )
+  }
 
-	return (
-		<S.Container>
-			<NavBar history={history} user={admin} />
-			<S.UserList>
-				<S.Title>User list</S.Title>
-				<S.UsersContainer>
-					{allUsers?.map(el => (
-						<S.UserInfo key={el.id}>
-							<S.UserText>{el?.username}</S.UserText>
-							<S.UserText>{el?.email}</S.UserText>
-							<S.UserText>{el?.role}</S.UserText>
-							<S.DeleteButton onClick={() => onClickDeleteButton(el.id)}>
-								Delete User
-							</S.DeleteButton>
-						</S.UserInfo>
-					))}
-				</S.UsersContainer>
-			</S.UserList>
-		</S.Container>
-	)
+  const renderRoleCell = user => {
+    return editedId === user.id ? (
+      <select>
+        <option>user</option>
+        <option>admin</option>
+      </select>
+    ) : (
+      <S.UserText>{user?.role}</S.UserText>
+    )
+  }
+
+  const changeInputValue = e => {
+    const { name, value } = e
+    setUpdatedData({
+      ...updatedData,
+      [name]: value,
+    })
+  }
+
+  return (
+    <S.Container>
+      <S.UserList>
+        <S.Title>User list</S.Title>
+        <S.UsersContainer>
+          {allUsers?.map(el => (
+            <S.UserInfo key={el.id}>
+              {renderUsernameCell(el)}
+              {renderEmailCell(el)}
+              {renderRoleCell(el)}
+              <S.EditButton onClick={() => onClickEditButton(el.id)}>
+                {editedId === el.id ? "Cancel" : "Edit"}
+              </S.EditButton>
+              <S.DeleteButton
+                disabled={el.id === editedId}
+                onClick={() => onClickDeleteButton(el.id)}
+              >
+                Delete User
+              </S.DeleteButton>
+              <S.SaveButton
+                isVisible={el.id === editedId}
+                onClick={onClickSaveButton}
+              >
+                Save
+              </S.SaveButton>
+            </S.UserInfo>
+          ))}
+        </S.UsersContainer>
+      </S.UserList>
+    </S.Container>
+  )
 }
 
-export default Admin
+export default inject(store => ({
+  userStore: store.store.userStore,
+}))(observer(Admin))

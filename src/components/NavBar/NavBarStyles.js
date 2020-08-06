@@ -39,3 +39,8 @@ export const HeaderText = styled.p`
   font-size: 16px;
   font-weight: 500;
 `
+
+export const EditButton = styled(LinkButton)`
+  float: left;
+  margin-right: auto;
+`

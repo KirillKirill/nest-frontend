@@ -1,35 +1,43 @@
 import React from "react"
+import { inject, observer } from "mobx-react"
+import { withRouter } from "react-router-dom"
 import * as S from "./NavBarStyles"
-import authServices from "../../services/authService"
 
-const NavBar = ({ history, user }) => {
-	const onLogoutClick = () => {
-		authServices
-			.logout()
-			.then(res => res.json())
-			.then(() => {
-				localStorage.removeItem("token")
-				history.push("/")
-			})
-	}
+const NavBar = ({ history, authStore, profileStore }) => {
+  const onLogoutClick = async () => {
+    await authStore.logout()
+    profileStore.setProfile(null)
+    history.push("/")
+  }
 
-	return (
-		<S.Container isAuth={!!user}>
-			{localStorage.getItem("token") ? (
-				<>
-					<S.HeaderText>{`Hey, ${user?.username}!`}</S.HeaderText>
-					<S.LinkButton to="/" onClick={onLogoutClick}>
-						Log Out
-					</S.LinkButton>
-				</>
-			) : (
-				<>
-					<S.LinkButton to="/register">Sign Up</S.LinkButton>
-					<S.LinkButton to="/login">Login</S.LinkButton>
-				</>
-			)}
-		</S.Container>
-	)
+  const profile =
+    profileStore.profile || JSON.parse(localStorage.getItem("profile"))?.profile
+
+  const token = JSON.parse(localStorage.getItem("auth"))?.token
+
+  return (
+    <S.Container isAuth={!!token}>
+      {token ? (
+        <>
+          <S.HeaderText>{`Hey, ${profile?.username}!`}</S.HeaderText>
+          <S.EditButton to="/edit">Edit Profile</S.EditButton>
+          <S.LinkButton to="/" onClick={onLogoutClick}>
+            Log Out
+          </S.LinkButton>
+        </>
+      ) : (
+        <>
+          <S.LinkButton to="/register">Sign Up</S.LinkButton>
+          <S.LinkButton to="/login">Login</S.LinkButton>
+        </>
+      )}
+    </S.Container>
+  )
 }
 
-export default NavBar
+export default withRouter(
+  inject(store => ({
+    authStore: store.store.authStore,
+    profileStore: store.store.profileStore,
+  }))(observer(NavBar))
+)

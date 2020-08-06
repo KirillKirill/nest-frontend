@@ -1,11 +1,11 @@
 import React from "react"
 import { Route, Redirect } from "react-router-dom"
 
-const PrivateProfileRoute = ({ component: Component, ...rest }) => (
+const PrivateEditRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      JSON.parse(localStorage.getItem("auth"))?.token ? (
+      JSON.parse(localStorage.getItem("auth")).token ? (
         <Component {...props} />
       ) : (
         <Redirect to={{ pathname: "/login" }} />
@@ -14,4 +14,4 @@ const PrivateProfileRoute = ({ component: Component, ...rest }) => (
   />
 )
 
-export default PrivateProfileRoute
+export default PrivateEditRoute
