@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import is from "styled-is"
 
 export const Container = styled.div`
   display: flex;
@@ -30,9 +31,9 @@ export const UserText = styled.p`
 
 export const UserInfo = styled.div`
   display: grid;
-  grid-template-columns: 200px 300px 100px 100px;
+  grid-template-columns: 200px 300px 100px 100px 100px 100px;
   grid-gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `
 
 export const DeleteButton = styled.button`
@@ -49,4 +50,21 @@ export const DeleteButton = styled.button`
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+`
+
+export const EditButton = styled(DeleteButton)`
+  background-color: lightskyblue;
+`
+
+export const SaveButton = styled(DeleteButton)`
+  display: none;
+  background-color: forestgreen;
+
+  ${is("isVisible")`
+    display: flex
+  `};
 `

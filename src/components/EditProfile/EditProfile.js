@@ -16,6 +16,7 @@ const EditProfile = ({ history, profileStore }) => {
       ...inputValues,
       [name]: value,
     })
+    profileStore.error = null
   }
 
   const onEditButtonClick = async e => {
@@ -24,7 +25,13 @@ const EditProfile = ({ history, profileStore }) => {
     const { id } = profile
     const { username, email } = inputValues
 
-    await profileStore.updateProfile(id, username, email)
+    const updatedData = {
+      ...profile,
+      username: username,
+      email: email,
+    }
+
+    await profileStore.updateProfile(id, updatedData)
   }
 
   const onDeleteClick = async e => {
@@ -35,6 +42,17 @@ const EditProfile = ({ history, profileStore }) => {
     if (!profileStore.isFailure) {
       history.push("/")
     }
+  }
+
+  const getErrorForField = fieldName => {
+    if (profileStore.error) {
+      const errorForField =
+        profileStore.error.find(err => err.property === fieldName) || null
+
+      return errorForField ? Object.values(errorForField.constraints)[0] : null
+    }
+
+    return null
   }
 
   const { username, email } = inputValues
@@ -51,10 +69,12 @@ const EditProfile = ({ history, profileStore }) => {
             onChange={onInputChange}
           />
         </S.Label>
+        <S.ErrorText>{getErrorForField("username")}</S.ErrorText>
         <S.Label>
           E-mail:
           <S.EditInput value={email} name="email" onChange={onInputChange} />
         </S.Label>
+        <S.ErrorText>{getErrorForField("email")}</S.ErrorText>
         <S.EditButton onClick={onEditButtonClick}>Edit</S.EditButton>
         <S.DeleteButton onClick={onDeleteClick}>Delete Profile</S.DeleteButton>
       </S.EditForm>
@@ -63,6 +83,5 @@ const EditProfile = ({ history, profileStore }) => {
 }
 
 export default inject(store => ({
-  authStore: store.store.authStore,
   profileStore: store.store.profileStore,
 }))(observer(EditProfile))

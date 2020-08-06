@@ -35,9 +35,9 @@ class ProfileStore {
     }
   }
 
-  async updateProfile(id, username, email) {
+  async updateProfile(id, updatedData) {
     this.isLoading = true
-    const resp = await userServices.updateUser(id, username, email)
+    const resp = await userServices.updateUser(id, updatedData)
 
     if (resp.ok) {
       const data = await resp.json()
@@ -52,8 +52,7 @@ class ProfileStore {
       runInAction(() => {
         this.isFailure = true
         this.isLoading = false
-        this.error = err.message
-        this.setProfile(null)
+        this.error = err.validationErrors
       })
     }
   }

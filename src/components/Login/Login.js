@@ -9,15 +9,15 @@ const Login = ({ history, authStore }) => {
     password: "",
   })
 
-  const [error, setError] = useState("")
-
   const changeInputValue = e => {
     const { name, value } = e.target
-    setError("")
+
     setInputValue({
       ...inputValues,
       [name]: value,
     })
+
+    authStore.error = null
   }
 
   const handleLoginClick = async e => {
@@ -26,9 +26,7 @@ const Login = ({ history, authStore }) => {
     const { email, password } = inputValues
 
     await authStore.login(email, password)
-    if (authStore.isFailure) {
-      setError(authStore.error)
-    } else {
+    if (!authStore.isFailure) {
       history.push("/")
     }
   }
@@ -51,10 +49,10 @@ const Login = ({ history, authStore }) => {
           placeholder="Password"
           type="password"
         />
-        <S.ErrorText>{error}</S.ErrorText>
+        <S.ErrorText>{authStore.error}</S.ErrorText>
         <S.Button
           onClick={handleLoginClick}
-          disabled={error || !email || !password}
+          disabled={authStore.error || !email || !password}
         >
           Log In
         </S.Button>

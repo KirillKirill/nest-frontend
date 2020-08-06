@@ -10,15 +10,15 @@ const Register = ({ history, authStore }) => {
     password: "",
   })
 
-  const [error, setError] = useState("")
-
   const changeInputValue = e => {
     const { name, value } = e.target
+
     setInputValue({
       ...inputValues,
       [name]: value,
     })
-    setError("")
+
+    authStore.error = null
   }
 
   const handleSignUpClick = async e => {
@@ -26,17 +26,15 @@ const Register = ({ history, authStore }) => {
 
     await authStore.register(inputValues)
 
-    if (authStore.isFailure) {
-      setError(authStore.error)
-    } else {
+    if (!authStore.isFailure) {
       history.push("/")
     }
   }
 
   const getErrorForField = fieldName => {
-    if (error) {
+    if (authStore.error) {
       const errorForField =
-        error.find(err => err.property === fieldName) || null
+        authStore.error.find(err => err.property === fieldName) || null
 
       return errorForField ? Object.values(errorForField.constraints)[0] : null
     }
@@ -73,7 +71,8 @@ const Register = ({ history, authStore }) => {
         <S.Button
           onClick={handleSignUpClick}
           disabled={
-            error || !Object.values(inputValues).every(val => val.length > 0)
+            authStore.error ||
+            !Object.values(inputValues).every(val => val.length > 0)
           }
         >
           Sign Up

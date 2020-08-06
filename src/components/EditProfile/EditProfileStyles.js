@@ -13,7 +13,6 @@ export const Title = styled.h3`
 
 export const EditForm = styled(Form)`
   margin-top: 50px;
-  height: 300px;
 `
 
 export const EditInput = styled(Input)`
@@ -32,4 +31,11 @@ export const EditButton = styled(Button)``
 
 export const DeleteButton = styled(EditButton)`
   background-color: red;
+`
+
+export const ErrorText = styled.p`
+  height: 20px;
+  margin: 5px 0 0 0;
+  color: red;
+  font-size: 10px;
 `

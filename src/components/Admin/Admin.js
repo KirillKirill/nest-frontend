@@ -1,40 +1,89 @@
 import React, { useEffect, useState } from "react"
-import jwtDecode from "jwt-decode"
+import { inject, observer } from "mobx-react"
 import * as S from "./AdminStyles"
-import userServices from "../../services/userService"
+import userStore from "../../stores/UserStore"
 
 const Admin = () => {
-  const [admin, setAdmin] = useState(null)
-
   const [allUsers, setAllUsers] = useState(null)
-
-  useEffect(() => {
-    const fetchAdmin = async () => {
-      const { userId } = jwtDecode(localStorage.getItem("token"))
-      const resp = await userServices.getUserById(userId)
-      const result = await resp.json()
-
-      setAdmin(result)
-    }
-
-    fetchAdmin()
-  }, [])
+  const [editedId, setEditedId] = useState(null)
+  const [updatedData, setUpdatedData] = useState({
+    id: "",
+    email: "",
+    username: "",
+    role: "",
+  })
 
   useEffect(() => {
     const fetchAllUsers = async () => {
-      const response = await userServices.getUsers()
-      const data = await response.json()
-      setAllUsers(data.filter(el => el.role !== "admin"))
+      await userStore.getUsers()
+      setAllUsers(userStore.users)
     }
 
     fetchAllUsers()
   }, [])
 
+  const onClickEditButton = id => {
+    const editedUser = allUsers.find(el => el.id === id)
+    if (editedId === id) {
+      setEditedId(null)
+      setUpdatedData(null)
+    } else {
+      setEditedId(id)
+      setUpdatedData(editedUser)
+    }
+  }
+
   const onClickDeleteButton = async id => {
-    await userServices.deleteUser(id)
-    const response = await userServices.getUsers()
-    const newUserList = await response.json()
-    setAllUsers(newUserList.filter(el => el.role !== "admin"))
+    await userStore.deleteUser(id)
+    setAllUsers(userStore.users)
+  }
+
+  const onClickSaveButton = () => {
+    setEditedId(null)
+    setAllUsers(userStore.users)
+  }
+
+  const renderUsernameCell = user => {
+    return editedId === user.id ? (
+      <input
+        value={updatedData.username}
+        name="username"
+        onChange={changeInputValue}
+      />
+    ) : (
+      <S.UserText>{user?.username}</S.UserText>
+    )
+  }
+
+  const renderEmailCell = user => {
+    return editedId === user.id ? (
+      <input
+        value={updatedData.email}
+        name="email"
+        onChange={changeInputValue}
+      />
+    ) : (
+      <S.UserText>{user?.email}</S.UserText>
+    )
+  }
+
+  const renderRoleCell = user => {
+    return editedId === user.id ? (
+      <select>
+        <option>user</option>
+        <option>admin</option>
+      </select>
+    ) : (
+      <S.UserText>{user?.role}</S.UserText>
+    )
+  }
+
+  const changeInputValue = e => {
+    const { name, value } = e
+    setUpdatedData({
+      ...updatedData,
+      [name]: value,
+    })
   }
 
   return (
@@ -44,12 +93,24 @@ const Admin = () => {
         <S.UsersContainer>
           {allUsers?.map(el => (
             <S.UserInfo key={el.id}>
-              <S.UserText>{el?.username}</S.UserText>
-              <S.UserText>{el?.email}</S.UserText>
-              <S.UserText>{el?.role}</S.UserText>
-              <S.DeleteButton onClick={() => onClickDeleteButton(el.id)}>
+              {renderUsernameCell(el)}
+              {renderEmailCell(el)}
+              {renderRoleCell(el)}
+              <S.EditButton onClick={() => onClickEditButton(el.id)}>
+                {editedId === el.id ? "Cancel" : "Edit"}
+              </S.EditButton>
+              <S.DeleteButton
+                disabled={el.id === editedId}
+                onClick={() => onClickDeleteButton(el.id)}
+              >
                 Delete User
               </S.DeleteButton>
+              <S.SaveButton
+                isVisible={el.id === editedId}
+                onClick={onClickSaveButton}
+              >
+                Save
+              </S.SaveButton>
             </S.UserInfo>
           ))}
         </S.UsersContainer>
@@ -58,4 +119,6 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default inject(store => ({
+  userStore: store.store.userStore,
+}))(observer(Admin))

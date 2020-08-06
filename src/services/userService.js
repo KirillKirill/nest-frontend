@@ -28,11 +28,13 @@ function deleteUser(id) {
   return fetch(`${API_URL}/user/${id}`, options)
 }
 
-function updateUser(id, username, email) {
+function updateUser(id, updatedData) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({ username, email }),
+    body: JSON.stringify({
+      updatedData,
+    }),
   }
 
   return fetch(`${API_URL}/user/${id}`, options)
