@@ -4,7 +4,8 @@ import * as S from "./ProfileStyles"
 
 const Profile = ({ profileStore }) => {
   const profile =
-    profileStore.profile && JSON.parse(localStorage.getItem("profile")).profile
+    profileStore.profile &&
+    JSON.parse(localStorage.getItem("profile")).profile
 
   return (
     <S.ProfileInfo>

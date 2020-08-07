@@ -57,7 +57,8 @@ const Login = ({ history, authStore }) => {
           Log In
         </S.Button>
         <S.Text>
-          Haven't account? Please, <Link to="/register">Sign up</Link>
+          Haven&apos;t account? Please,
+          <Link to="/register">Sign up</Link>
         </S.Text>
       </S.Form>
     </S.Container>

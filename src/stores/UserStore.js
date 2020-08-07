@@ -30,7 +30,10 @@ class UserStore {
   }
 
   async deleteUser(id) {
-    const deletingUserIndex = this.users.findIndex(user => user.id === id)
+    const deletingUserIndex = this.users.findIndex(
+      user => user.id === id
+    )
+
     this.isLoading = true
     const response = await userServices.deleteUser(id)
     if (response.ok) {
@@ -46,7 +49,9 @@ class UserStore {
   }
 
   async updateUser(id, updatedData) {
-    const updatingUserIndex = this.users.findIndex(user => user.id === id)
+    const updatingUserIndex = this.users.findIndex(
+      user => user.id === id
+    )
     this.isLoading = true
     const resp = await userServices.updateUser(id, updatedData)
 

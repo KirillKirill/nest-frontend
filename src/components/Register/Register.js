@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { inject, observer } from "mobx-react"
-import * as S from "./RegisterStyles"
 import { Link } from "react-router-dom"
+import * as S from "./RegisterStyles"
 
 const Register = ({ history, authStore }) => {
   const [inputValues, setInputValue] = useState({
@@ -34,9 +34,12 @@ const Register = ({ history, authStore }) => {
   const getErrorForField = fieldName => {
     if (authStore.error) {
       const errorForField =
-        authStore.error.find(err => err.property === fieldName) || null
+        authStore.error.find(err => err.property === fieldName) ||
+        null
 
-      return errorForField ? Object.values(errorForField.constraints)[0] : null
+      return errorForField
+        ? Object.values(errorForField.constraints)[0]
+        : null
     }
 
     return null
@@ -85,6 +88,6 @@ const Register = ({ history, authStore }) => {
   )
 }
 
-export default inject(store => ({ authStore: store.store.authStore }))(
-  observer(Register)
-)
+export default inject(store => ({
+  authStore: store.store.authStore,
+}))(observer(Register))

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { inject, observer } from "mobx-react"
 import * as S from "./AdminStyles"
-import userStore from "../../stores/UserStore"
 
-const Admin = () => {
+const Admin = ({ userStore }) => {
   const [users, setUsers] = useState(null)
   const [updatingUser, setUpdatingUser] = useState({
     id: "",
@@ -19,7 +18,7 @@ const Admin = () => {
     }
 
     fetchAllUsers()
-  }, [])
+  }, [userStore])
 
   const onClickEditButton = id => {
     const editedUser = users.find(el => el.id === id)
@@ -40,6 +39,22 @@ const Admin = () => {
     await userStore.updateUser(id, updatingUser)
     setUpdatingUser(null)
     setUsers(userStore.users)
+  }
+
+  const changeInputValue = e => {
+    const { name, value } = e.target
+    setUpdatingUser({
+      ...updatingUser,
+      [name]: value,
+    })
+  }
+
+  const changeSelectValue = e => {
+    const { name, value } = e.target
+    setUpdatingUser({
+      ...updatingUser,
+      [name]: value,
+    })
   }
 
   const renderUsernameCell = user => {
@@ -79,22 +94,6 @@ const Admin = () => {
     ) : (
       <S.UserText>{user?.role}</S.UserText>
     )
-  }
-
-  const changeInputValue = e => {
-    const { name, value } = e.target
-    setUpdatingUser({
-      ...updatingUser,
-      [name]: value,
-    })
-  }
-
-  const changeSelectValue = e => {
-    const { name, value } = e.target
-    setUpdatingUser({
-      ...updatingUser,
-      [name]: value,
-    })
   }
 
   return (

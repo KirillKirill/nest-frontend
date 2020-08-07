@@ -11,7 +11,8 @@ const NavBar = ({ history, authStore, profileStore }) => {
   }
 
   const profile =
-    profileStore.profile || JSON.parse(localStorage.getItem("profile"))?.profile
+    profileStore.profile ||
+    JSON.parse(localStorage.getItem("profile"))?.profile
 
   const token = JSON.parse(localStorage.getItem("auth"))?.token
 
