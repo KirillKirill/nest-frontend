@@ -4,7 +4,7 @@ import userServices from "../services/userService"
 class UserStore {
   isLoading = false
   isFailure = false
-  users = null
+  users = []
   error = null
 
   async getUsers() {
@@ -13,7 +13,7 @@ class UserStore {
     if (response.ok) {
       const data = await response.json()
       runInAction(() => {
-        this.users = data.filter(user => user.role !== "admin")
+        this.users = data
         this.isLoading = false
         this.isFailure = false
         this.error = null
@@ -21,7 +21,7 @@ class UserStore {
     } else {
       const err = await response.json()
       runInAction(() => {
-        this.users = null
+        this.users = []
         this.isLoading = false
         this.isFailure = true
         this.error = err.message
@@ -30,10 +30,11 @@ class UserStore {
   }
 
   async deleteUser(id) {
+    const deletingUserIndex = this.users.findIndex(user => user.id === id)
     this.isLoading = true
     const response = await userServices.deleteUser(id)
     if (response.ok) {
-      await this.getUsers()
+      this.users.splice(deletingUserIndex, 1)
     } else {
       const err = await response.json()
       runInAction(() => {
@@ -45,6 +46,7 @@ class UserStore {
   }
 
   async updateUser(id, updatedData) {
+    const updatingUserIndex = this.users.findIndex(user => user.id === id)
     this.isLoading = true
     const resp = await userServices.updateUser(id, updatedData)
 
@@ -54,7 +56,7 @@ class UserStore {
         this.isFailure = false
         this.isLoading = false
         this.error = null
-        this.users = [...this.users, data]
+        this.users.splice(updatingUserIndex, 1, data)
       })
     } else {
       const err = await resp.json()

@@ -4,9 +4,8 @@ import * as S from "./AdminStyles"
 import userStore from "../../stores/UserStore"
 
 const Admin = () => {
-  const [allUsers, setAllUsers] = useState(null)
-  const [editedId, setEditedId] = useState(null)
-  const [updatedData, setUpdatedData] = useState({
+  const [users, setUsers] = useState(null)
+  const [updatingUser, setUpdatingUser] = useState({
     id: "",
     email: "",
     username: "",
@@ -16,37 +15,37 @@ const Admin = () => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       await userStore.getUsers()
-      setAllUsers(userStore.users)
+      setUsers(userStore.users)
     }
 
     fetchAllUsers()
   }, [])
 
   const onClickEditButton = id => {
-    const editedUser = allUsers.find(el => el.id === id)
-    if (editedId === id) {
-      setEditedId(null)
-      setUpdatedData(null)
+    const editedUser = users.find(el => el.id === id)
+    if (updatingUser?.id === id) {
+      setUpdatingUser(null)
     } else {
-      setEditedId(id)
-      setUpdatedData(editedUser)
+      setUpdatingUser(editedUser)
     }
   }
 
   const onClickDeleteButton = async id => {
     await userStore.deleteUser(id)
-    setAllUsers(userStore.users)
+    setUsers(userStore.users)
   }
 
-  const onClickSaveButton = () => {
-    setEditedId(null)
-    setAllUsers(userStore.users)
+  const onClickSaveButton = async () => {
+    const { id } = updatingUser
+    await userStore.updateUser(id, updatingUser)
+    setUpdatingUser(null)
+    setUsers(userStore.users)
   }
 
   const renderUsernameCell = user => {
-    return editedId === user.id ? (
-      <input
-        value={updatedData.username}
+    return updatingUser?.id === user.id ? (
+      <S.Input
+        value={updatingUser.username}
         name="username"
         onChange={changeInputValue}
       />
@@ -56,9 +55,9 @@ const Admin = () => {
   }
 
   const renderEmailCell = user => {
-    return editedId === user.id ? (
-      <input
-        value={updatedData.email}
+    return updatingUser?.id === user.id ? (
+      <S.Input
+        value={updatingUser.email}
         name="email"
         onChange={changeInputValue}
       />
@@ -68,20 +67,32 @@ const Admin = () => {
   }
 
   const renderRoleCell = user => {
-    return editedId === user.id ? (
-      <select>
-        <option>user</option>
-        <option>admin</option>
-      </select>
+    return updatingUser?.id === user.id ? (
+      <S.Select
+        name="role"
+        value={updatingUser.role}
+        onChange={changeSelectValue}
+      >
+        <option value="user">user</option>
+        <option value="admin">admin</option>
+      </S.Select>
     ) : (
       <S.UserText>{user?.role}</S.UserText>
     )
   }
 
   const changeInputValue = e => {
-    const { name, value } = e
-    setUpdatedData({
-      ...updatedData,
+    const { name, value } = e.target
+    setUpdatingUser({
+      ...updatingUser,
+      [name]: value,
+    })
+  }
+
+  const changeSelectValue = e => {
+    const { name, value } = e.target
+    setUpdatingUser({
+      ...updatingUser,
       [name]: value,
     })
   }
@@ -91,22 +102,22 @@ const Admin = () => {
       <S.UserList>
         <S.Title>User list</S.Title>
         <S.UsersContainer>
-          {allUsers?.map(el => (
+          {users?.map(el => (
             <S.UserInfo key={el.id}>
               {renderUsernameCell(el)}
               {renderEmailCell(el)}
               {renderRoleCell(el)}
               <S.EditButton onClick={() => onClickEditButton(el.id)}>
-                {editedId === el.id ? "Cancel" : "Edit"}
+                {updatingUser?.id === el.id ? "Cancel" : "Edit"}
               </S.EditButton>
               <S.DeleteButton
-                disabled={el.id === editedId}
+                disabled={updatingUser?.id}
                 onClick={() => onClickDeleteButton(el.id)}
               >
                 Delete User
               </S.DeleteButton>
               <S.SaveButton
-                isVisible={el.id === editedId}
+                isVisible={el.id === updatingUser?.id}
                 onClick={onClickSaveButton}
               >
                 Save

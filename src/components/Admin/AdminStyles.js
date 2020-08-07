@@ -68,3 +68,17 @@ export const SaveButton = styled(DeleteButton)`
     display: flex
   `};
 `
+
+export const Input = styled.input`
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+`
+
+export const Select = styled.select`
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+`
