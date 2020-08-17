@@ -25,6 +25,7 @@ module.exports = {
       { extensions: [".js", ".jsx"] },
     ],
     "react/prop-types": "off",
+    "react/jsx-props-no-spreading": "off",
     "no-param-reassign": "off",
     "import/no-useless-path-segments": "off",
   },

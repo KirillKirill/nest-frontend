@@ -1,61 +1,55 @@
-import React, { useState } from "react"
+import React from "react"
+import { useFormik } from "formik"
 import { inject, observer } from "mobx-react"
 import { Link } from "react-router-dom"
 import * as S from "../Register/RegisterStyles"
 
 const Login = ({ history, authStore }) => {
-  const [inputValues, setInputValue] = useState({
-    email: "",
-    password: "",
-  })
-
-  const changeInputValue = e => {
-    const { name, value } = e.target
-
-    setInputValue({
-      ...inputValues,
-      [name]: value,
-    })
-
-    authStore.error = null
-  }
-
-  const handleLoginClick = async e => {
-    e.preventDefault()
-
-    const { email, password } = inputValues
-
-    await authStore.login(email, password)
+  const handleLoginClick = async (email, pass) => {
+    await authStore.login(email, pass)
     if (!authStore.isFailure) {
       history.push("/")
     }
   }
 
-  const { email, password } = inputValues
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    onSubmit: ({ email, password }) => {
+      handleLoginClick(email, password)
+    },
+  })
+
+  const handleInputChange = e => {
+    const { name, value } = e.target
+    const { setFieldValue } = formik
+
+    setFieldValue(name, value)
+    authStore.error = null
+  }
 
   return (
     <S.Container>
-      <S.Form>
+      <S.Form onSubmit={formik.handleSubmit}>
         <S.Input
-          onChange={changeInputValue}
-          value={email}
+          onChange={handleInputChange}
+          value={formik.values.email}
+          type="email"
           name="email"
-          placeholder="E-mail"
+          placeholder="Email"
         />
         <S.Input
-          onChange={changeInputValue}
-          value={password}
+          onChange={handleInputChange}
+          value={formik.values.password}
+          type="password"
           name="password"
           placeholder="Password"
-          type="password"
         />
         <S.ErrorText>{authStore.error}</S.ErrorText>
-        <S.Button
-          onClick={handleLoginClick}
-          disabled={authStore.error || !email || !password}
-        >
-          Log In
-        </S.Button>
+        <S.Button type="submit">Log In</S.Button>
         <S.Text>
           Haven&apos;t account? Please,
           <Link to="/register">Sign up</Link>

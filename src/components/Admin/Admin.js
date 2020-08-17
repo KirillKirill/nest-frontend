@@ -41,15 +41,7 @@ const Admin = ({ userStore }) => {
     setUsers(userStore.users)
   }
 
-  const changeInputValue = e => {
-    const { name, value } = e.target
-    setUpdatingUser({
-      ...updatingUser,
-      [name]: value,
-    })
-  }
-
-  const changeSelectValue = e => {
+  const onChangeValue = e => {
     const { name, value } = e.target
     setUpdatingUser({
       ...updatingUser,
@@ -62,7 +54,7 @@ const Admin = ({ userStore }) => {
       <S.Input
         value={updatingUser.username}
         name="username"
-        onChange={changeInputValue}
+        onChange={onChangeValue}
       />
     ) : (
       <S.UserText>{user?.username}</S.UserText>
@@ -74,7 +66,7 @@ const Admin = ({ userStore }) => {
       <S.Input
         value={updatingUser.email}
         name="email"
-        onChange={changeInputValue}
+        onChange={onChangeValue}
       />
     ) : (
       <S.UserText>{user?.email}</S.UserText>
@@ -86,7 +78,7 @@ const Admin = ({ userStore }) => {
       <S.Select
         name="role"
         value={updatingUser.role}
-        onChange={changeSelectValue}
+        onChange={onChangeValue}
       >
         <option value="user">user</option>
         <option value="admin">admin</option>

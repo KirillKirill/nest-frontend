@@ -20,16 +20,30 @@ const NavBar = ({ history, authStore, profileStore }) => {
     <S.Container isAuth={!!token}>
       {token ? (
         <>
-          <S.HeaderText>{`Hey, ${profile?.username}!`}</S.HeaderText>
-          <S.EditButton to="/edit">Edit Profile</S.EditButton>
-          <S.LinkButton to="/" onClick={onLogoutClick}>
-            Log Out
-          </S.LinkButton>
+          <S.LeftHeaderContainer>
+            <S.HeaderText>{`Hey, ${profile?.username}!`}</S.HeaderText>
+            <S.LinkButton to="/">Profile</S.LinkButton>
+          </S.LeftHeaderContainer>
+          <S.RightHeaderContainer>
+            <S.LinkButton to="/edit">Edit Profile</S.LinkButton>
+            {profile?.role === "admin" ? (
+              <S.LinkButton to="/admin">Admin</S.LinkButton>
+            ) : null}
+            <S.LinkButton to="/users">Users</S.LinkButton>
+            <S.LinkButton to="/" onClick={onLogoutClick}>
+              Log Out
+            </S.LinkButton>
+          </S.RightHeaderContainer>
         </>
       ) : (
         <>
-          <S.LinkButton to="/register">Sign Up</S.LinkButton>
-          <S.LinkButton to="/login">Login</S.LinkButton>
+          <S.LeftHeaderContainer>
+            <S.LinkButton to="/users">Users</S.LinkButton>
+          </S.LeftHeaderContainer>
+          <S.RightHeaderContainer>
+            <S.LinkButton to="/register">Sign Up</S.LinkButton>
+            <S.LinkButton to="/login">Login</S.LinkButton>
+          </S.RightHeaderContainer>
         </>
       )}
     </S.Container>
