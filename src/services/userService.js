@@ -32,9 +32,7 @@ function updateUser(id, updatedData) {
   const options = {
     method: "PUT",
     headers,
-    body: JSON.stringify({
-      updatedData,
-    }),
+    body: JSON.stringify(updatedData),
   }
 
   return fetch(`${API_URL}/user/${id}`, options)

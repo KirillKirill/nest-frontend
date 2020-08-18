@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react"
+import { inject, observer } from "mobx-react"
 import * as S from "./UsersStyles"
-import userServices from "../../services/userService"
 
-const Users = () => {
+const Users = ({ userStore }) => {
   const [users, setUsers] = useState([])
 
   useEffect(() => {
     const fetchAllUsers = async () => {
-      const response = await userServices.getUsers()
-      const data = await response.json()
-      setUsers(data)
+      await userStore.getUsers()
+      setUsers(userStore.users)
     }
 
     fetchAllUsers()
-  }, [])
+  }, [userStore])
+
   return (
     <S.Container>
       <S.UsersContainer>
@@ -34,4 +34,6 @@ const Users = () => {
   )
 }
 
-export default Users
+export default inject(store => ({
+  userStore: store.store.userStore,
+}))(observer(Users))

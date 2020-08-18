@@ -7,8 +7,8 @@ const PrivateAdminRoute = ({ component: Component, ...rest }) => (
     {...rest}
     render={props =>
       JSON.parse(localStorage.getItem("auth")).token &&
-      jwtDecode(JSON.parse(localStorage.getItem("auth")).token).role ===
-        "admin" ? (
+      jwtDecode(JSON.parse(localStorage.getItem("auth")).token)
+        .role === "admin" ? (
         <Component {...props} />
       ) : (
         <Redirect to={{ pathname: "/" }} />

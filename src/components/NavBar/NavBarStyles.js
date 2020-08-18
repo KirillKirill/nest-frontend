@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 export const Container = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 80px;
@@ -13,6 +13,17 @@ export const Container = styled.div`
   ${is("isAuth")`
     justify-content: space-between
   `};
+`
+
+export const LeftHeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+`
+
+export const RightHeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
 `
 
 export const LinkButton = styled(Link)`
@@ -35,12 +46,7 @@ export const LinkButton = styled(Link)`
 `
 
 export const HeaderText = styled.p`
-  margin: 10px 20px 10px;
+  margin: 10px 20px 10px 0;
   font-size: 16px;
   font-weight: 500;
-`
-
-export const EditButton = styled(LinkButton)`
-  float: left;
-  margin-right: auto;
 `

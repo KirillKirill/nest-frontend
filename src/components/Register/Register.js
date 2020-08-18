@@ -1,30 +1,12 @@
-import React, { useState } from "react"
+import React from "react"
 import { inject, observer } from "mobx-react"
-import * as S from "./RegisterStyles"
+import { useFormik } from "formik"
 import { Link } from "react-router-dom"
+import * as S from "./RegisterStyles"
 
 const Register = ({ history, authStore }) => {
-  const [inputValues, setInputValue] = useState({
-    username: "",
-    email: "",
-    password: "",
-  })
-
-  const changeInputValue = e => {
-    const { name, value } = e.target
-
-    setInputValue({
-      ...inputValues,
-      [name]: value,
-    })
-
-    authStore.error = null
-  }
-
-  const handleSignUpClick = async e => {
-    e.preventDefault()
-
-    await authStore.register(inputValues)
+  const handleSignUpClick = async values => {
+    await authStore.register(values)
 
     if (!authStore.isFailure) {
       history.push("/")
@@ -34,45 +16,69 @@ const Register = ({ history, authStore }) => {
   const getErrorForField = fieldName => {
     if (authStore.error) {
       const errorForField =
-        authStore.error.find(err => err.property === fieldName) || null
+        authStore.error.find(err => err.property === fieldName) ||
+        null
 
-      return errorForField ? Object.values(errorForField.constraints)[0] : null
+      return errorForField
+        ? Object.values(errorForField.constraints)[0]
+        : null
     }
 
     return null
   }
 
-  const { username, email, password } = inputValues
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+
+    onSubmit: values => {
+      handleSignUpClick(values)
+    },
+  })
+
+  const handleInputChange = e => {
+    const { name, value } = e.target
+    const { setFieldValue } = formik
+
+    setFieldValue(name, value)
+    authStore.error = null
+  }
+
   return (
     <S.Container>
-      <S.Form>
+      <S.Form onSubmit={formik.handleSubmit}>
         <S.Input
-          onChange={changeInputValue}
-          value={username}
+          onChange={handleInputChange}
+          value={formik.values.username}
           name="username"
+          type="text"
           placeholder="Username"
         />
         <S.ErrorText>{getErrorForField("username")}</S.ErrorText>
         <S.Input
-          onChange={changeInputValue}
-          value={email}
+          onChange={handleInputChange}
+          value={formik.values.email}
           name="email"
+          type="email"
           placeholder="E-mail"
         />
         <S.ErrorText>{getErrorForField("email")}</S.ErrorText>
         <S.Input
-          onChange={changeInputValue}
-          value={password}
+          onChange={handleInputChange}
+          value={formik.values.password}
           name="password"
           placeholder="Password"
           type="password"
         />
         <S.ErrorText>{getErrorForField("password")}</S.ErrorText>
         <S.Button
-          onClick={handleSignUpClick}
+          type="submit"
           disabled={
             authStore.error ||
-            !Object.values(inputValues).every(val => val.length > 0)
+            !Object.values(formik.values).every(val => val.length > 0)
           }
         >
           Sign Up
@@ -85,6 +91,6 @@ const Register = ({ history, authStore }) => {
   )
 }
 
-export default inject(store => ({ authStore: store.store.authStore }))(
-  observer(Register)
-)
+export default inject(store => ({
+  authStore: store.store.authStore,
+}))(observer(Register))

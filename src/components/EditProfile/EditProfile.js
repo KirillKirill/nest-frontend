@@ -1,37 +1,40 @@
-import React, { useState } from "react"
+import React from "react"
 import { inject, observer } from "mobx-react"
+import { useFormik } from "formik"
 import * as S from "./EditProfileStyles"
 
 const EditProfile = ({ history, profileStore }) => {
-  const profile = JSON.parse(localStorage.getItem("profile")).profile
+  const { profile } = JSON.parse(localStorage.getItem("profile"))
 
-  const [inputValues, setInputValue] = useState({
-    username: profile.username,
-    email: profile.email,
-  })
-
-  const onInputChange = e => {
-    const { name, value } = e.target
-    setInputValue({
-      ...inputValues,
-      [name]: value,
-    })
-    profileStore.error = null
-  }
-
-  const onEditButtonClick = async e => {
-    e.preventDefault()
-
+  const onEditButtonClick = async (username, email) => {
     const { id } = profile
-    const { username, email } = inputValues
 
     const updatedData = {
       ...profile,
-      username: username,
-      email: email,
+      username,
+      email,
     }
 
     await profileStore.updateProfile(id, updatedData)
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      username: profile.username,
+      email: profile.email,
+    },
+
+    onSubmit: ({ username, email }) => {
+      onEditButtonClick(username, email)
+    },
+  })
+
+  const handleInputChange = e => {
+    const { name, value } = e.target
+    const { setFieldValue } = formik
+
+    setFieldValue(name, value)
+    profileStore.error = null
   }
 
   const onDeleteClick = async e => {
@@ -47,36 +50,45 @@ const EditProfile = ({ history, profileStore }) => {
   const getErrorForField = fieldName => {
     if (profileStore.error) {
       const errorForField =
-        profileStore.error.find(err => err.property === fieldName) || null
+        profileStore.error.find(err => err.property === fieldName) ||
+        null
 
-      return errorForField ? Object.values(errorForField.constraints)[0] : null
+      return errorForField
+        ? Object.values(errorForField.constraints)[0]
+        : null
     }
 
     return null
   }
 
-  const { username, email } = inputValues
-
   return (
     <S.Container>
       <S.Title>Edit Your Profile</S.Title>
-      <S.EditForm>
+      <S.EditForm onSubmit={formik.handleSubmit}>
         <S.Label>
           Name:
           <S.EditInput
-            value={username}
+            value={formik.values.username}
             name="username"
-            onChange={onInputChange}
+            type="text"
+            onChange={handleInputChange}
           />
         </S.Label>
         <S.ErrorText>{getErrorForField("username")}</S.ErrorText>
         <S.Label>
           E-mail:
-          <S.EditInput value={email} name="email" onChange={onInputChange} />
+          <S.EditInput
+            value={formik.values.email}
+            name="email"
+            type="email"
+            onChange={handleInputChange}
+          />
         </S.Label>
         <S.ErrorText>{getErrorForField("email")}</S.ErrorText>
-        <S.EditButton onClick={onEditButtonClick}>Edit</S.EditButton>
-        <S.DeleteButton onClick={onDeleteClick}>Delete Profile</S.DeleteButton>
+        <S.EditButton type="submit">Edit</S.EditButton>
+        <S.DeleteButton onClick={onDeleteClick}>
+          Delete Profile
+        </S.DeleteButton>
       </S.EditForm>
     </S.Container>
   )

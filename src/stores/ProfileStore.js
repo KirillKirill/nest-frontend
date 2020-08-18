@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-cycle */
 import { observable, action, runInAction, decorate } from "mobx"
 import { persist, create } from "mobx-persist"
-import userServices from "../services/userService"
 import jwtDecode from "jwt-decode"
 import authStore from "./AuthStore"
+import userServices from "../services/userService"
 
 class ProfileStore {
   isLoading = false
