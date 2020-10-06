@@ -7,7 +7,7 @@ const PrivateEditRoute: React.FC<IPrivateRoute> = ({
   component: Component,
   ...rest
 }) => {
-  const isAuth = getToken()?.token;
+  const isAuth = getToken();
   return (
     <Route
       {...rest}

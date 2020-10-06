@@ -6,17 +6,20 @@ import { IPrivateRoute } from './index';
 const PrivateProfileRoute: React.FC<IPrivateRoute> = ({
   component: Component,
   ...rest
-}) => (
-  <Route
-    {...rest}
-    render={props =>
-      JSON.parse(getToken()!)?.token ? (
-        <Component {...props} />
-      ) : (
-        <Redirect to={{ pathname: '/login' }} />
-      )
-    }
-  />
-);
+}) => {
+  const isAuth = !!getToken();
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isAuth ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={{ pathname: '/login' }} />
+        )
+      }
+    />
+  );
+};
 
 export default PrivateProfileRoute;

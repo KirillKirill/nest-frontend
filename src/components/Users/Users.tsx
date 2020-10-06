@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { User } from 'types';
 import * as S from 'components/Users/UsersStyles';
 
-const Users = ({ userStore }: any) => {
+const Users: React.FC = ({ userStore }: any) => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {

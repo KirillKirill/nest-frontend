@@ -13,6 +13,7 @@ export const Title = styled.h3`
 
 export const EditForm = styled(Form)`
   margin-top: 50px;
+  white-space: nowrap;
 `;
 
 export const EditInput = styled(Input)`

@@ -9,8 +9,8 @@ const PrivateAdminRoute: React.FC<IPrivateRoute> = ({
   component: Component,
   ...rest
 }) => {
-  const isAuthToken = getToken()?.token;
-  const isAdmin = jwtDecode<Decoded>(getToken()?.token!).role === 'admin';
+  const isAuthToken = getToken();
+  const isAdmin = jwtDecode<Decoded>(getToken()!).role === 'admin';
   return (
     <Route
       {...rest}

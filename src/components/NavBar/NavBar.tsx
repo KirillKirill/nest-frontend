@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import * as S from './NavBarStyles';
+import { getToken, getAccount } from 'utils';
 
 type NavBarProps = {
   authStore?: any;
@@ -13,14 +14,11 @@ const NavBar: React.FC<NavBarProps> = ({
 }: NavBarProps) => {
   const onLogoutClick = async () => {
     await authStore.logout();
-    profileStore.setProfile(null);
   };
 
-  const profile =
-    profileStore.profile ||
-    JSON.parse(localStorage.getItem('profile')!)?.profile;
+  const profile = profileStore.profile || getAccount()?.profile;
 
-  const token = JSON.parse(localStorage.getItem('auth')!)?.token;
+  const token = getToken();
 
   return (
     <S.Container isAuth={!!token}>

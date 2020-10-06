@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { observable, action, runInAction, decorate } from 'mobx';
+import { observable, action, decorate } from 'mobx';
 import { persist, create } from 'mobx-persist';
 import jwtDecode from 'jwt-decode';
-import { history } from 'components/AppRouter/AppRouter';
-import { Decoded } from 'types';
+import { history } from 'components/AppRouter/history';
+import { Decoded, User, Error } from 'types';
 import authStore from 'stores/AuthStore';
 import userServices from 'services/userService';
 
@@ -14,31 +14,29 @@ type UpdatedData = {
 class ProfileStore {
   isLoading = false;
   isFailure = false;
-  profile = null;
-  error = null;
+  profile: User | null = null;
+  error: Error[] | null = null;
 
   async getProfile(jwtToken: string) {
     const data = jwtDecode<Decoded>(jwtToken);
     const { userId } = data;
 
     this.isLoading = true;
-    const resp = await userServices.getUserById(Number(userId));
+    const resp = await userServices.getUserById(userId);
     if (resp.ok) {
       const userData = await resp.json();
-      runInAction(() => {
-        this.isLoading = false;
-        this.isFailure = false;
-        this.error = null;
-        this.setProfile(userData);
-      });
+
+      this.isLoading = false;
+      this.isFailure = false;
+      this.error = null;
+      this.setProfile(userData);
     } else {
       const err = await resp.json();
-      runInAction(() => {
-        this.isFailure = true;
-        this.isLoading = false;
-        this.error = err;
-        this.setProfile(null);
-      });
+
+      this.isFailure = true;
+      this.isLoading = false;
+      this.error = err;
+      this.setProfile(null);
     }
   }
 
@@ -48,19 +46,17 @@ class ProfileStore {
 
     if (resp.ok) {
       const data = await resp.json();
-      runInAction(() => {
-        this.isFailure = false;
-        this.isLoading = false;
-        this.error = null;
-        this.setProfile(data);
-      });
+
+      this.isFailure = false;
+      this.isLoading = false;
+      this.error = null;
+      this.setProfile(data);
     } else {
       const err = await resp.json();
-      runInAction(() => {
-        this.isFailure = true;
-        this.isLoading = false;
-        this.error = err.validationErrors;
-      });
+
+      this.isFailure = true;
+      this.isLoading = false;
+      this.error = err.validationErrors;
     }
   }
 
@@ -68,25 +64,21 @@ class ProfileStore {
     this.isLoading = true;
     const resp = await userServices.deleteUser(id);
     if (resp.ok) {
-      runInAction(() => {
-        this.isLoading = false;
-        this.isFailure = false;
-        this.error = null;
-        this.setProfile(null);
-        authStore.setToken('');
-        history.push('/');
-      });
+      this.isLoading = false;
+      this.isFailure = false;
+      this.error = null;
+      this.setProfile(null);
+      authStore.setToken('');
+      history.push('/');
     } else {
       const err = await resp.json();
-      runInAction(() => {
-        this.isFailure = true;
-        this.isLoading = false;
-        this.error = err.message;
-      });
+      this.isFailure = true;
+      this.isLoading = false;
+      this.error = err.message;
     }
   }
 
-  setProfile(data: any) {
+  setProfile(data: User | null) {
     this.profile = data;
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { history } from 'components/AppRouter/history';
 
 import Register from 'components/Register';
 import Login from 'components/Login';
@@ -14,8 +14,6 @@ import {
   PrivateEditRoute,
   PrivateAdminRoute,
 } from 'components/PrivateRoutes';
-
-export const history = createBrowserHistory();
 
 const AppRouter: React.FC = () => {
   return (

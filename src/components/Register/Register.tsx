@@ -2,17 +2,19 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { useFormik } from 'formik';
 import { Link } from 'react-router-dom';
+import { Error } from 'types';
 import * as S from 'components/Register/RegisterStyles';
 
-const Register = ({ authStore }: any) => {
+const Register: React.FC = ({ authStore }: any) => {
   const handleSignUpClick = async (values: Record<string, string>) => {
     await authStore.register(values);
   };
 
-  const getErrorForField = (fieldName: string): any => {
+  const getErrorForField = (fieldName: string): string | null => {
     if (authStore.error) {
-      const errorForField =
-        authStore.error.find((err: any) => err.property === fieldName) || null;
+      const errorForField: Error =
+        authStore.error.find((err: Error) => err.property === fieldName) ||
+        null;
 
       return errorForField ? Object.values(errorForField.constraints)[0] : null;
     }
@@ -55,7 +57,6 @@ const Register = ({ authStore }: any) => {
           onChange={handleInputChange}
           value={formik.values.email}
           name='email'
-          type='email'
           placeholder='E-mail'
         />
         <S.ErrorText>{getErrorForField('email')}</S.ErrorText>

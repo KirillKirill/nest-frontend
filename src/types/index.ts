@@ -18,3 +18,16 @@ export type User = {
   role: string;
   password?: string;
 };
+
+export type ErrorResponse = {
+  statusCode: number;
+  validationErrors: Error[];
+};
+
+export type Error = {
+  children?: unknown;
+  constraints: Record<string, string>;
+  property: string;
+  target: Record<string, string>;
+  value: string;
+};

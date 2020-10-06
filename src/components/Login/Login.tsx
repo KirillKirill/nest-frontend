@@ -15,8 +15,8 @@ const Login: React.FC = ({ authStore }: any) => {
       password: '',
     },
 
-    onSubmit: ({ email, password }) => {
-      handleLoginClick(email, password);
+    onSubmit: async ({ email, password }) => {
+      await handleLoginClick(email, password);
     },
   });
 

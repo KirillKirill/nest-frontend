@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { observable, action, runInAction, decorate } from 'mobx';
 import { persist, create } from 'mobx-persist';
-import { history } from 'components/AppRouter/AppRouter';
+import { history } from 'components/AppRouter/history';
 import { RegistrationData } from 'types';
 import authService from 'services/authService';
 import profileStore from './ProfileStore';
@@ -19,11 +19,10 @@ class AuthStore {
       await this.login(regData.email, regData.password);
     } else {
       const err = await response.json();
-      runInAction(() => {
-        this.isLoading = false;
-        this.isFailure = true;
-        this.error = err.validationErrors;
-      });
+
+      this.isLoading = false;
+      this.isFailure = true;
+      this.error = err.validationErrors;
     }
   }
 
@@ -33,34 +32,35 @@ class AuthStore {
 
     if (response.ok) {
       const data = await response.json();
+      this.isFailure = false;
+      this.isLoading = false;
+      this.error = null;
+      this.setToken(data.token);
+      history.push('/');
+
       runInAction(() => {
-        this.isFailure = false;
-        this.isLoading = false;
-        this.error = null;
-        this.setToken(data.token);
         profileStore.getProfile(this.token);
-        history.push('/');
       });
     } else {
       const err = await response.json();
-      runInAction(() => {
-        this.isFailure = true;
-        this.isLoading = false;
-        this.error = err.message;
-        this.setToken('');
-      });
+
+      this.isFailure = true;
+      this.isLoading = false;
+      this.error = err.message;
+      this.setToken('');
     }
   }
 
   async logout() {
+    profileStore.setProfile(null);
+    this.setToken('');
+
     await authService.logout();
-    runInAction(() => {
-      this.isFailure = false;
-      this.isLoading = false;
-      this.error = null;
-      this.setToken('');
-      history.push('/');
-    });
+
+    this.isFailure = false;
+    this.isLoading = false;
+    this.error = null;
+    history.push('/');
   }
 
   setToken(token: string) {

@@ -3,8 +3,9 @@ import { inject, observer } from 'mobx-react';
 import { useFormik } from 'formik';
 import { getAccount } from 'utils';
 import * as S from 'components/EditProfile/EditProfileStyles';
+import { Error } from 'types';
 
-const EditProfile = ({ profileStore }: any) => {
+const EditProfile: React.FC = ({ profileStore }: any) => {
   const { profile } = getAccount();
 
   const onEditButtonClick = async (username: string, email: string) => {
@@ -48,7 +49,7 @@ const EditProfile = ({ profileStore }: any) => {
   const getErrorForField = (fieldName: string): any => {
     if (profileStore.error) {
       const errorForField =
-        profileStore.error.find((err: any) => err.property === fieldName) ||
+        profileStore.error.find((err: Error) => err.property === fieldName) ||
         null;
 
       return errorForField ? Object.values(errorForField.constraints)[0] : null;

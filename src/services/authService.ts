@@ -29,7 +29,7 @@ function logout() {
     method: 'POST',
     headers: {
       ...commonHeaders,
-      Cookie: `Authentication=${getToken().token}`,
+      Cookie: `Authentication=${getToken()}`,
     },
   };
 
